@@ -3,6 +3,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { ScrollRestoration } from "./ScrollRestoration";
 import { MessageCircle } from "lucide-react";
+import DonorPopup from "./DonorPopup";
 
 function FloatingWhatsApp() {
   const [phone, setPhone] = useState<string | null>(null);
@@ -42,6 +43,7 @@ export function Layout({ children }: { children: ReactNode }) {
       </main>
       <Footer />
       <FloatingWhatsApp />
+      <DonorPopup />
     </div>
   );
 }
