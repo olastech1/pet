@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingCart, Menu, X, PawPrint, Moon, Sun, Globe, Receipt } from "lucide-react";
+import { ShoppingCart, Menu, X, PawPrint, Moon, Sun, Globe, Receipt, Heart } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
@@ -44,27 +44,38 @@ export function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-medium transition-colors ${
-                link.urgent
-                  ? location === link.href
-                    ? "text-red-600 dark:text-red-400"
-                    : "text-red-500 dark:text-red-400 hover:text-red-600"
-                  : location === link.href
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-primary"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            if (link.label === "Donate") return null; // We use the button instead
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  link.urgent
+                    ? location === link.href
+                      ? "text-red-600 dark:text-red-400"
+                      : "text-red-500 dark:text-red-400 hover:text-red-600"
+                    : location === link.href
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-primary"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Actions */}
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Donate Button */}
+          <Link href="/donate" className="hidden sm:block">
+            <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white font-bold gap-1.5 shadow-sm">
+              <Heart className="w-3.5 h-3.5 fill-white" />
+              Donate
+            </Button>
+          </Link>
+
           {/* Currency Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
