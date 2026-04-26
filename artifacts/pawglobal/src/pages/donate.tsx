@@ -484,9 +484,9 @@ export default function Donate() {
                         name="petId"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Pet ID / Reference <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+                            <FormLabel>Pet ID or Name <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
                             <FormControl>
-                              <Input placeholder="e.g. ID123456" className="h-11" {...field} />
+                              <Input placeholder="e.g. ID123456 or Loki" className="h-11" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
