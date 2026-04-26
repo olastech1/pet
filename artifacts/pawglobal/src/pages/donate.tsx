@@ -25,6 +25,7 @@ const donationSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email address"),
   message: z.string().optional(),
+  petId: z.string().optional(),
 });
 
 type DonationFormValues = z.infer<typeof donationSchema>;
@@ -76,10 +77,12 @@ export default function Donate() {
   const { toast } = useToast();
   const { currency } = useCurrency();
   const searchString = useSearch();
-  const [, navigate] = useLocation();
+  const [locationPath, navigate] = useLocation();
+
+  const params = new URLSearchParams(searchString);
+  const isRedeem = locationPath.includes("/redeem-pledge") || params.get("redeem") === "true";
 
   // Parse pet-specific query params (e.g. /donate?pet=Loki&id=ID123456)
-  const params = new URLSearchParams(searchString);
   const petName = params.get("pet") || "";
   const petId = params.get("id") || "";
   const hasPetContext = !!(petName.trim());
@@ -146,7 +149,7 @@ export default function Donate() {
 
   const form = useForm<DonationFormValues>({
     resolver: zodResolver(donationSchema),
-    defaultValues: { amount: presets[1], name: "", email: "", message: "" },
+    defaultValues: { amount: presets[1], name: "", email: "", message: "", petId: "" },
   });
 
   const watchedAmount = form.watch("amount") || 0;
@@ -165,6 +168,7 @@ export default function Donate() {
       "",
       `👤 Name: ${data.name}`,
       `📧 Email: ${data.email}`,
+      ...(data.petId ? [`🆔 Pet ID: ${data.petId}`] : []),
       ...(data.message ? [`💬 Message: "${data.message}"`] : []),
       "",
       "Please help me complete my donation. Thank you! 🐾",
@@ -209,13 +213,14 @@ export default function Donate() {
           customerEmail: data.email,
           origin: window.location.origin,
           metadata: {
-            type: "donation",
+            type: isRedeem ? "pledge_redemption" : "donation",
             donor: data.name,
             shelter: selectedCause === "pet-specific" ? "rescue" : selectedCause,
             message: data.message ?? "",
             originalAmount: `${currencySymbol}${data.amount}`,
             frequency,
             ...(hasPetContext ? { petName, petId } : {}),
+            ...((!hasPetContext && data.petId) ? { petId: data.petId } : {}),
           },
         }),
       });
@@ -241,8 +246,8 @@ export default function Donate() {
   return (
     <PageTransition>
       <SEOHead
-        title="Donate to Pet Rescue"
-        description="Support EuthList's mission to save animals from euthanasia. Donate via Stripe, PayPal, WhatsApp, Crypto and more. Every pound saves a life."
+        title={isRedeem ? "Redeem Your Pledge" : "Donate to Pet Rescue"}
+        description={isRedeem ? "Fulfill your rescue pledge to help save a life." : "Support EuthList's mission to save animals from euthanasia. Donate via Stripe, PayPal, WhatsApp, Crypto and more. Every pound saves a life."}
         keywords="donate pet rescue, animal charity donation, save dogs from euthanasia, animal rescue fund, donate crypto pet rescue"
       />
       {/* Pet-specific banner */}
@@ -274,12 +279,12 @@ export default function Donate() {
             <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
           <h1 className="text-2xl sm:text-4xl md:text-6xl font-serif font-bold mb-3 sm:mb-4 leading-tight">
-            {hasPetContext ? `Help save ${petName}` : "Give a pet a second chance"}
+            {isRedeem ? (hasPetContext ? `Redeem pledge for ${petName}` : "Redeem Your Pledge") : (hasPetContext ? `Help save ${petName}` : "Give a pet a second chance")}
           </h1>
           <p className="text-sm sm:text-lg md:text-xl opacity-85 max-w-2xl mx-auto px-2">
-            {hasPetContext
-              ? `Your donation will directly fund ${petName}'s rescue, vet care, and journey to a forever home.`
-              : "100% of your donation goes directly to animal rescue operations, vet care, and shelter support around the world."}
+            {isRedeem
+              ? (hasPetContext ? `Thank you for honoring your pledge. Your contribution directly funds ${petName}'s rescue and vet care.` : "Thank you for honoring your pledge. Your contribution directly funds the vet care and rehoming of rescued pets.")
+              : (hasPetContext ? `Your donation will directly fund ${petName}'s rescue, vet care, and journey to a forever home.` : "100% of your donation goes directly to animal rescue operations, vet care, and shelter support around the world.")}
           </p>
           <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto mt-6 sm:mt-10">
             {[
@@ -473,6 +478,21 @@ export default function Donate() {
                         )}
                       />
                     </div>
+                    {isRedeem && !hasPetContext && (
+                      <FormField
+                        control={form.control}
+                        name="petId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Pet ID / Reference <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
+                            <FormControl>
+                              <Input placeholder="e.g. ID123456" className="h-11" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                     <FormField
                       control={form.control}
                       name="message"
@@ -503,7 +523,7 @@ export default function Donate() {
                             ) : frequency === "monthly" ? (
                               <><RefreshCw className="w-5 h-5" /> Give {currencySymbol}{watchedAmount.toLocaleString()} / month</>
                             ) : (
-                              <><Heart className="w-5 h-5 fill-current" /> Donate {currencySymbol}{watchedAmount.toLocaleString()}</>
+                              <><Heart className="w-5 h-5 fill-current" /> {isRedeem ? "Redeem Pledge" : "Donate"} {currencySymbol}{watchedAmount.toLocaleString()}</>
                             )}
                           </Button>
                           <p className="text-center text-xs text-muted-foreground">

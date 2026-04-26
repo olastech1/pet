@@ -196,7 +196,7 @@ export default function EuthanasiaPage() {
                 <Heart className="w-4 h-4 mr-2 fill-red-600" /> Donate Now
               </Button>
             </Link>
-            <Link href="/">
+            <Link href="/redeem-pledge">
               <Button variant="outline" className="text-white border-white hover:bg-white/10 font-bold shadow-md rounded-full px-6">
                 Redeem Pledge
               </Button>

@@ -119,6 +119,7 @@ function AdminAwareLayout() {
               <Route path="/shop/:id" component={ProductDetail} />
               <Route path="/donate/success" component={DonateSuccess} />
               <Route path="/donate" component={Donate} />
+              <Route path="/redeem-pledge" component={Donate} />
               <Route path="/cart" component={Cart} />
               <Route path="/checkout/success" component={CheckoutSuccess} />
               <Route path="/checkout" component={Checkout} />
