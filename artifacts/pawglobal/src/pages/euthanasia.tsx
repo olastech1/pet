@@ -36,11 +36,13 @@ function DeadlineBadge({ deadline }: { deadline: string }) {
   );
 }
 
-function EuthanasiaCard({ listing }: { listing: EuthanasiaListing }) {
+function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaListing, searchQuery?: string }) {
   const isRescued = listing.status === "rescued";
   const days = daysUntil(listing.deadline);
   const urgent = !isRescued && days <= 3;
   const displayId = petDisplayId(listing.id);
+
+  const isSearchedById = searchQuery.trim() !== "" && displayId.toLowerCase().includes(searchQuery.trim().toLowerCase());
 
   return (
     <div className={`bg-background rounded-2xl border overflow-hidden shadow-sm flex flex-col transition-all duration-200 hover:shadow-md ${
@@ -105,7 +107,7 @@ function EuthanasiaCard({ listing }: { listing: EuthanasiaListing }) {
           <div className="flex flex-col gap-2">
             <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}`}>
               <Button className="w-full h-9 text-sm bg-red-600 hover:bg-red-700 text-white" size="sm">
-                <Heart className="w-3.5 h-3.5 mr-1.5 fill-white" /> Donate to Save {listing.name}
+                <Heart className="w-3.5 h-3.5 mr-1.5 fill-white" /> {isSearchedById ? "Redeem Pledge" : `Donate to Save ${listing.name}`}
               </Button>
             </Link>
             <Link href={`/euthanasia/${listing.id}#adopt`} className="w-full">
@@ -238,7 +240,7 @@ export default function EuthanasiaPage() {
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map(listing => (
-                <EuthanasiaCard key={listing.id} listing={listing} />
+                <EuthanasiaCard key={listing.id} listing={listing} searchQuery={search} />
               ))}
             </div>
           ) : (
