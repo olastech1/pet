@@ -103,7 +103,7 @@ function EuthanasiaCard({ listing }: { listing: EuthanasiaListing }) {
 
         {!isRescued ? (
           <div className="flex flex-col gap-2">
-            <Link href={`/euthanasia/${listing.id}`}>
+            <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}`}>
               <Button className="w-full h-9 text-sm bg-red-600 hover:bg-red-700 text-white" size="sm">
                 <Heart className="w-3.5 h-3.5 mr-1.5 fill-white" /> Donate to Save {listing.name}
               </Button>

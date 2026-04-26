@@ -248,48 +248,48 @@ export default function Donate() {
       {/* Pet-specific banner */}
       {hasPetContext && (
         <div className="bg-red-600 text-white">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                <PawPrint className="w-5 h-5" />
+          <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-start sm:items-center justify-between gap-3">
+            <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+                <PawPrint className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <div>
-                <p className="font-bold text-lg">You're donating to help <span className="underline underline-offset-2">{petName}</span></p>
-                {petId && <p className="text-sm text-white/80">Pet {petId} — your donation will go directly towards their rescue, vet care, and rehoming.</p>}
+              <div className="min-w-0">
+                <p className="font-bold text-sm sm:text-lg leading-tight">You're donating to help <span className="underline underline-offset-2">{petName}</span></p>
+                {petId && <p className="text-xs sm:text-sm text-white/80 mt-0.5 leading-snug">Pet {petId} — your donation goes directly towards their rescue, vet care, and rehoming.</p>}
               </div>
             </div>
-            <button onClick={clearPetContext} className="shrink-0 p-1.5 rounded-full hover:bg-white/20 transition-colors" title="Remove pet context">
-              <X className="w-5 h-5" />
+            <button onClick={clearPetContext} className="shrink-0 p-1 sm:p-1.5 rounded-full hover:bg-white/20 transition-colors mt-0.5 sm:mt-0" title="Remove pet context">
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
       )}
 
       {/* Hero */}
-      <section className="relative bg-primary overflow-hidden py-16 md:py-24">
+      <section className="relative bg-primary overflow-hidden py-10 sm:py-16 md:py-24">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center opacity-10" />
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
         <div className="container mx-auto px-4 relative z-10 text-primary-foreground text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl mb-6">
-            <Heart className="w-8 h-8" />
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/20 rounded-2xl mb-4 sm:mb-6">
+            <Heart className="w-6 h-6 sm:w-8 sm:h-8" />
           </div>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-serif font-bold mb-3 sm:mb-4 leading-tight">
             {hasPetContext ? `Help save ${petName}` : "Give a pet a second chance"}
           </h1>
-          <p className="text-lg md:text-xl opacity-85 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg md:text-xl opacity-85 max-w-2xl mx-auto px-2">
             {hasPetContext
               ? `Your donation will directly fund ${petName}'s rescue, vet care, and journey to a forever home.`
               : "100% of your donation goes directly to animal rescue operations, vet care, and shelter support around the world."}
           </p>
-          <div className="grid grid-cols-3 gap-6 max-w-lg mx-auto mt-10">
+          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto mt-6 sm:mt-10">
             {[
               { num: "12,400+", label: "Animals helped" },
               { num: "85+", label: "Partner shelters" },
               { num: "40+", label: "Countries" },
             ].map(stat => (
               <div key={stat.label} className="text-center">
-                <p className="text-2xl md:text-3xl font-bold">{stat.num}</p>
-                <p className="text-xs opacity-75 mt-1">{stat.label}</p>
+                <p className="text-lg sm:text-2xl md:text-3xl font-bold">{stat.num}</p>
+                <p className="text-[10px] sm:text-xs opacity-75 mt-1">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -297,15 +297,15 @@ export default function Donate() {
       </section>
 
       {/* Main Content */}
-      <div className="bg-muted/20 py-14">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+      <div className="bg-muted/20 py-8 sm:py-14">
+        <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
 
             {/* Form */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="lg:col-span-7 space-y-4 sm:space-y-6">
 
               {/* Frequency toggle */}
-              <div className="bg-background rounded-2xl border p-6">
+              <div className="bg-background rounded-2xl border p-4 sm:p-6">
                 <h2 className="text-lg font-bold font-serif mb-4">How often would you like to give?</h2>
                 <div className="grid grid-cols-2 gap-3">
                   <button
@@ -358,9 +358,9 @@ export default function Donate() {
               </div>
 
               {/* Cause selector cards */}
-              <div className="bg-background rounded-2xl border p-6">
+              <div className="bg-background rounded-2xl border p-4 sm:p-6">
                 <h2 className="text-lg font-bold font-serif mb-4">Choose a cause</h2>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {CAUSES.map(cause => {
                     const Icon = cause.icon;
                     const active = selectedCause === cause.id;
@@ -390,7 +390,7 @@ export default function Donate() {
               </div>
 
               {/* Amount selector */}
-              <div className="bg-background rounded-2xl border p-6">
+              <div className="bg-background rounded-2xl border p-4 sm:p-6">
                 <h2 className="text-lg font-bold font-serif mb-1">
                   Select an amount{frequency === "monthly" && <span className="text-sm font-normal text-muted-foreground ml-2">per month</span>}
                 </h2>
@@ -400,7 +400,7 @@ export default function Donate() {
                   </p>
                 )}
                 {frequency === "once" && <div className="mb-4" />}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
                   {presets.map(amount => (
                     <button
                       key={amount}
@@ -418,7 +418,7 @@ export default function Donate() {
                   <button
                     type="button"
                     onClick={() => { setIsCustom(true); form.setValue("amount", 0); }}
-                    className={`h-14 rounded-xl border-2 text-base font-bold transition-all col-span-2 md:col-span-4 ${
+                    className={`h-14 rounded-xl border-2 text-base font-bold transition-all col-span-2 sm:col-span-4 ${
                       isCustom
                         ? "border-primary bg-primary text-primary-foreground shadow-sm"
                         : "border-border bg-muted/30 text-foreground hover:border-primary/50"
@@ -441,7 +441,7 @@ export default function Donate() {
               </div>
 
               {/* Donor details */}
-              <div className="bg-background rounded-2xl border p-6">
+              <div className="bg-background rounded-2xl border p-4 sm:p-6">
                 <h2 className="text-lg font-bold font-serif mb-4">Your details</h2>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -607,7 +607,7 @@ export default function Donate() {
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-5 space-y-5">
+            <div className="lg:col-span-5 space-y-4 sm:space-y-5">
 
               {/* Trust badge — changes based on frequency */}
               <div className="bg-primary text-primary-foreground rounded-2xl p-6 relative overflow-hidden">
