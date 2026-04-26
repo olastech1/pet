@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
+import { useAdminData } from "@/contexts/AdminDataContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const DONORS = [
-  { name: "Alex M.", amount: "$10", location: "London" },
-  { name: "Sarah K.", amount: "£25", location: "Manchester" },
-  { name: "James R.", amount: "$50", location: "New York" },
-  { name: "Priya S.", amount: "€15", location: "Dublin" },
-  { name: "Tom W.", amount: "£100", location: "Birmingham" },
-  { name: "Emily C.", amount: "$30", location: "Toronto" },
-  { name: "Lucas B.", amount: "€20", location: "Paris" },
-  { name: "Olivia H.", amount: "£40", location: "Bristol" },
-  { name: "Aisha N.", amount: "$75", location: "Chicago" },
-  { name: "Noah F.", amount: "€50", location: "Amsterdam" },
-  { name: "Grace T.", amount: "£15", location: "Edinburgh" },
-  { name: "Daniel O.", amount: "$20", location: "Melbourne" },
-  { name: "Sophie L.", amount: "€35", location: "Berlin" },
-  { name: "Liam P.", amount: "£60", location: "Leeds" },
-  { name: "Chloe W.", amount: "$45", location: "Sydney" },
-  { name: "Ethan J.", amount: "€10", location: "Brussels" },
-  { name: "Amara K.", amount: "£80", location: "Glasgow" },
-  { name: "Ryan D.", amount: "$25", location: "Dublin" },
+  { name: "Alex M.", location: "London" },
+  { name: "Sarah K.", location: "Manchester" },
+  { name: "James R.", location: "New York" },
+  { name: "Priya S.", location: "Dublin" },
+  { name: "Tom W.", location: "Birmingham" },
+  { name: "Emily C.", location: "Toronto" },
+  { name: "Lucas B.", location: "Paris" },
+  { name: "Olivia H.", location: "Bristol" },
+  { name: "Aisha N.", location: "Chicago" },
+  { name: "Noah F.", location: "Amsterdam" },
+  { name: "Grace T.", location: "Edinburgh" },
+  { name: "Daniel O.", location: "Melbourne" },
+  { name: "Sophie L.", location: "Berlin" },
+  { name: "Liam P.", location: "Leeds" },
+  { name: "Chloe W.", location: "Sydney" },
+  { name: "Ethan J.", location: "Brussels" },
+  { name: "Amara K.", location: "Glasgow" },
+  { name: "Ryan D.", location: "Dublin" },
 ];
 
-const PETS = ["Loki", "Bella", "Max", "Daisy", "Charlie", "Luna", "Milo", "Rosie", "Cooper", "Molly"];
+const AMOUNTS = [10, 15, 20, 25, 30, 40, 50, 75, 100];
 
 function randomItem<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -36,11 +38,17 @@ interface Notification {
   id: number;
   donor: typeof DONORS[0];
   pet: string;
+  amountStr: string;
 }
 
 export default function DonorPopup() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [counter, setCounter] = useState(0);
+  const { euthanasiaListings } = useAdminData();
+  const { currency } = useCurrency();
+
+  const currencySymbol =
+    currency === "EUR" ? "€" :
+    currency === "GBP" ? "£" : "$";
 
   useEffect(() => {
     // Initial delay before first popup
@@ -54,17 +62,24 @@ export default function DonorPopup() {
     }, randomDelay(4, 10));
 
     return () => clearTimeout(first);
-  }, []);
+  }, [euthanasiaListings, currency]);
 
   function showNotification() {
+    // Use real pets if available, else fallback
+    const pets = euthanasiaListings.length > 0
+      ? euthanasiaListings.map(l => l.name)
+      : ["Loki", "Bella", "Max", "Daisy", "Charlie"];
+
+    const amount = randomItem(AMOUNTS);
     const id = Date.now();
     const notif: Notification = {
       id,
       donor: randomItem(DONORS),
-      pet: randomItem(PETS),
+      pet: randomItem(pets),
+      amountStr: `${currencySymbol}${amount}`,
     };
+
     setNotifications(prev => [...prev.slice(-1), notif]); // max 1 at a time
-    setCounter(c => c + 1);
 
     // Auto-remove after 5s
     setTimeout(() => {
@@ -84,7 +99,7 @@ export default function DonorPopup() {
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground leading-tight">
-              {notif.donor.name} just donated {notif.donor.amount}
+              {notif.donor.name} just donated {notif.amountStr}
             </p>
             <p className="text-xs text-muted-foreground truncate">
               to help {notif.pet} · {notif.donor.location}

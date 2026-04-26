@@ -131,6 +131,54 @@ export default function EuthanasiaDetail() {
             </div>
           )}
 
+          {/* Redeem Pledge — rescued pets only */}
+          {isRescued && (
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-background border border-green-200 dark:border-green-800 rounded-2xl overflow-hidden">
+                <div className="bg-green-50 dark:bg-green-950/20 border-b border-green-100 dark:border-green-900 px-6 py-4">
+                  <h2 className="font-bold text-lg text-green-700 dark:text-green-300 flex items-center gap-2">
+                    <Gift className="w-5 h-5 text-green-500" /> Redeem Your Pledge
+                  </h2>
+                  <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                    {listing.name} is safe! Honor your pledge and help more animals like {listing.name}.
+                  </p>
+                </div>
+                <div className="p-6 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Thank you for pledging to help {listing.name}. Your pledge contributes to the rescue operations that saved their life.
+                  </p>
+                  <Link href={`/redeem-pledge?pet=${encodeURIComponent(listing.name)}&id=${displayId}&redeem=true`}>
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white gap-2 h-11">
+                      <Gift className="w-4 h-4" /> Redeem Pledge for {listing.name}
+                    </Button>
+                  </Link>
+                  <p className="text-xs text-muted-foreground text-center">Secure · All major cards · PayPal accepted</p>
+                </div>
+              </div>
+
+              <div className="bg-background border border-border rounded-2xl overflow-hidden">
+                <div className="bg-muted/30 border-b border-border px-6 py-4">
+                  <h2 className="font-bold text-lg text-foreground flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-red-500" /> Help Another Pet
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Many more animals urgently need your support right now.
+                  </p>
+                </div>
+                <div className="p-6 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    While {listing.name} is now safe, dozens of other pets are still on the urgent rescue list and need your help today.
+                  </p>
+                  <Link href="/">
+                    <Button variant="outline" className="w-full gap-2 h-11">
+                      <Heart className="w-4 h-4 text-red-500" /> View Urgent Rescue List
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Main card */}
           <div className="bg-background border border-border rounded-2xl overflow-hidden mb-6">
             {/* Photo */}
@@ -297,53 +345,7 @@ export default function EuthanasiaDetail() {
             </div>
           )}
 
-          {/* Redeem Pledge — rescued pets only */}
-          {isRescued && (
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-background border border-green-200 dark:border-green-800 rounded-2xl overflow-hidden">
-                <div className="bg-green-50 dark:bg-green-950/20 border-b border-green-100 dark:border-green-900 px-6 py-4">
-                  <h2 className="font-bold text-lg text-green-700 dark:text-green-300 flex items-center gap-2">
-                    <Gift className="w-5 h-5 text-green-500" /> Redeem Your Pledge
-                  </h2>
-                  <p className="text-sm text-green-600 dark:text-green-400 mt-1">
-                    {listing.name} is safe! Honor your pledge and help more animals like {listing.name}.
-                  </p>
-                </div>
-                <div className="p-6 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Thank you for pledging to help {listing.name}. Your pledge contributes to the rescue operations that saved their life.
-                  </p>
-                  <Link href={`/redeem-pledge?pet=${encodeURIComponent(listing.name)}&id=${displayId}&redeem=true`}>
-                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white gap-2 h-11">
-                      <Gift className="w-4 h-4" /> Redeem Pledge for {listing.name}
-                    </Button>
-                  </Link>
-                  <p className="text-xs text-muted-foreground text-center">Secure · All major cards · PayPal accepted</p>
-                </div>
-              </div>
 
-              <div className="bg-background border border-border rounded-2xl overflow-hidden">
-                <div className="bg-muted/30 border-b border-border px-6 py-4">
-                  <h2 className="font-bold text-lg text-foreground flex items-center gap-2">
-                    <Heart className="w-5 h-5 text-red-500" /> Help Another Pet
-                  </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Many more animals urgently need your support right now.
-                  </p>
-                </div>
-                <div className="p-6 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    While {listing.name} is now safe, dozens of other pets are still on the urgent rescue list and need your help today.
-                  </p>
-                  <Link href="/">
-                    <Button variant="outline" className="w-full gap-2 h-11">
-                      <Heart className="w-4 h-4 text-red-500" /> View Urgent Rescue List
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Footer links */}
           <div className="mt-8 text-center text-sm text-muted-foreground space-y-1">
