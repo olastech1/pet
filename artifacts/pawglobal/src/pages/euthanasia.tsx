@@ -177,12 +177,19 @@ export default function EuthanasiaPage() {
             followed by a barbiturate injection that causes rapid unconsciousness and cardiac arrest.
             These animals are scheduled for euthanasia and need urgent help. <strong>Every day counts.</strong>
           </p>
-          {atRiskCount > 0 && (
-            <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5 text-sm font-semibold">
-              <Clock className="w-4 h-4" />
-              {atRiskCount} pet{atRiskCount !== 1 ? "s" : ""} urgently need rescue right now
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-4">
+            {atRiskCount > 0 && (
+              <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5 text-sm font-semibold">
+                <Clock className="w-4 h-4" />
+                {atRiskCount} pet{atRiskCount !== 1 ? "s" : ""} urgently need rescue right now
+              </div>
+            )}
+            <Link href="/donate">
+              <Button className="bg-white text-red-600 hover:bg-gray-100 font-bold shadow-md rounded-full px-6">
+                <Heart className="w-4 h-4 mr-2 fill-red-600" /> Donate Now
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
