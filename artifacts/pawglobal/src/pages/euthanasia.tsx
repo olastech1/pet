@@ -164,20 +164,20 @@ export default function EuthanasiaPage() {
         keywords="urgent pet rescue, euthanasia list, dogs needing rescue, cats needing rescue, adopt to save a life, pet adoption UK"
       />
       {/* Hero / Alert Banner */}
-      <div className="bg-red-600 dark:bg-red-900 text-white py-10 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <div className="flex items-center gap-3 mb-4">
+      <div className="bg-red-600 dark:bg-red-900 text-white py-10 px-4 text-center">
+        <div className="container mx-auto max-w-4xl flex flex-col items-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
             <h1 className="text-3xl md:text-4xl font-serif font-bold">Urgent Rescue List</h1>
           </div>
-          <p className="text-white/90 text-base md:text-lg leading-relaxed max-w-3xl mb-4">
+          <p className="text-white/90 text-base md:text-lg leading-relaxed max-w-3xl mb-4 mx-auto">
             Pet euthanasia is a humane, painless veterinary procedure — often involving a sedative
             followed by a barbiturate injection that causes rapid unconsciousness and cardiac arrest.
             These animals are scheduled for euthanasia and need urgent help. <strong>Every day counts.</strong>
           </p>
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 mt-6">
             {atRiskCount > 0 && (
               <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-1.5 text-sm font-semibold">
                 <Clock className="w-4 h-4" />
