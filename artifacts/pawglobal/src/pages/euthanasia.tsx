@@ -107,7 +107,7 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
           <div className="flex flex-col gap-2">
             <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}`}>
               <Button className="w-full h-9 text-sm bg-red-600 hover:bg-red-700 text-white" size="sm">
-                <Heart className="w-3.5 h-3.5 mr-1.5 fill-white" /> {isSearchedById ? "Redeem Pledge" : `Donate to Save ${listing.name}`}
+                <Heart className="w-3.5 h-3.5 mr-1.5 fill-white" /> Donate to Save {listing.name}
               </Button>
             </Link>
             <Link href={`/euthanasia/${listing.id}#adopt`} className="w-full">
@@ -117,9 +117,18 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
             </Link>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium">
-            <CheckCircle className="w-4 h-4" />
-            This pet found safety
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium">
+              <CheckCircle className="w-4 h-4" />
+              This pet found safety
+            </div>
+            {isSearchedById && (
+              <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}&redeem=true`} className="w-full">
+                <Button variant="outline" className="w-full h-9 text-sm border-green-600 text-green-700 hover:bg-green-50" size="sm">
+                  Redeem Pledge
+                </Button>
+              </Link>
+            )}
           </div>
         )}
       </div>
@@ -187,6 +196,11 @@ export default function EuthanasiaPage() {
             <Link href="/donate">
               <Button className="bg-white text-red-600 hover:bg-gray-100 font-bold shadow-md rounded-full px-6">
                 <Heart className="w-4 h-4 mr-2 fill-red-600" /> Donate Now
+              </Button>
+            </Link>
+            <Link href="/">
+              <Button variant="outline" className="text-white border-white hover:bg-white/10 font-bold shadow-md rounded-full px-6">
+                Redeem Pledge
               </Button>
             </Link>
           </div>
