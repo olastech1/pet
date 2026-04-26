@@ -18,6 +18,8 @@ export default function AdminSupplies() {
   const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [deleteConfirmName, setDeleteConfirmName] = useState<string | null>(null);
 
   const filtered = supplies.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,9 +48,13 @@ export default function AdminSupplies() {
     setEditingProduct(null);
   };
 
-  const handleDelete = (id: string, name: string) => {
-    deleteProduct(id);
-    toast({ title: `${name} removed` });
+  const handleDelete = () => {
+    if (deleteConfirmId && deleteConfirmName) {
+      deleteProduct(deleteConfirmId);
+      toast({ title: `${deleteConfirmName} removed` });
+      setDeleteConfirmId(null);
+      setDeleteConfirmName(null);
+    }
   };
 
   return (
@@ -75,8 +81,8 @@ export default function AdminSupplies() {
           />
         </div>
 
-        <div className="bg-background border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-background border border-border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[600px]">
             <thead className="bg-muted/50 border-b border-border">
               <tr>
                 <th className="text-left p-4 font-medium text-muted-foreground">Product</th>
@@ -118,27 +124,18 @@ export default function AdminSupplies() {
                       <Button size="sm" variant="ghost" onClick={() => handleEdit(supply)} className="h-8 w-8 p-0" data-testid={`button-edit-supply-${supply.id}`}>
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10" data-testid={`button-delete-supply-${supply.id}`}>
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Remove "{supply.name}"?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This will permanently remove this product from the store.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction className="bg-destructive text-destructive-foreground hover:bg-destructive/90" onClick={() => handleDelete(supply.id, supply.name)}>
-                              Remove
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                        data-testid={`button-delete-supply-${supply.id}`}
+                        onClick={() => {
+                          setDeleteConfirmId(supply.id);
+                          setDeleteConfirmName(supply.name);
+                        }}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -160,6 +157,26 @@ export default function AdminSupplies() {
           />
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove {deleteConfirmName}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove {deleteConfirmName} from the store. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleDelete}
+            >
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   );
 }
