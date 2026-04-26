@@ -49,11 +49,11 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
       isRescued ? "opacity-70 border-border" : urgent ? "border-red-300 dark:border-red-800 ring-1 ring-red-200 dark:ring-red-900" : "border-border hover:border-primary/30"
     }`}>
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted shrink-0">
+      <Link href={`/euthanasia/${listing.id}`} className="block relative aspect-[4/3] overflow-hidden bg-muted shrink-0 cursor-pointer group">
         <img
           src={listing.image}
           alt={listing.name}
-          className={`w-full h-full object-cover transition-transform duration-300 hover:scale-105 ${isRescued ? "grayscale" : ""}`}
+          className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isRescued ? "grayscale" : ""}`}
           onError={(e) => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=800&q=80"; }}
         />
         {isRescued && (
@@ -75,13 +75,15 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
             {displayId}
           </span>
         </div>
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
         <div className="flex items-start justify-between gap-2 mb-2">
           <div>
-            <h3 className="font-bold text-lg text-foreground leading-tight">{listing.name}</h3>
+            <Link href={`/euthanasia/${listing.id}`} className="hover:text-primary transition-colors cursor-pointer">
+              <h3 className="font-bold text-lg text-foreground leading-tight">{listing.name}</h3>
+            </Link>
             <p className="text-sm text-muted-foreground">{listing.breed} · {listing.age} · {listing.gender}</p>
           </div>
           {!isRescued && <DeadlineBadge deadline={listing.deadline} />}
