@@ -139,7 +139,7 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
 export default function EuthanasiaPage() {
   const { euthanasiaListings } = useAdminData();
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "at-risk" | "rescued" | "dog" | "cat">("at-risk");
+  const [filter, setFilter] = useState<"all" | "at-risk" | "rescued" | "dog" | "cat">("all");
 
   const filtered = useMemo(() => {
     return euthanasiaListings
