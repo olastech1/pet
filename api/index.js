@@ -838,6 +838,28 @@ async function ensureProductTables() {
   `);
 }
 
+async function ensureAdminTable() {
+  await query(`
+    CREATE TABLE IF NOT EXISTS admins (
+      id TEXT PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      name TEXT NOT NULL,
+      password TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'admin',
+      created_at TEXT NOT NULL
+    );
+  `);
+  
+  // Seed the default admin if table is empty
+  const { rowCount } = await query("SELECT id FROM admins LIMIT 1");
+  if (rowCount === 0) {
+    await query(`
+      INSERT INTO admins (id, email, name, password, role, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `, ["admin-1", "admin@pawglobal.com", "Super Admin", "pawglobal2024", "super", new Date().toISOString()]);
+  }
+}
+
 function dbRowToProduct(row) {
   let images = [];
   try { images = JSON.parse(row.images || "[]"); } catch {}
@@ -1013,6 +1035,85 @@ app.delete("/api/euthanasia/:id", async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: "Failed to delete listing." });
+  }
+});
+
+// ────────────────────────────────────────────────────────────
+// 9c. Admins (DB-backed)
+// ────────────────────────────────────────────────────────────
+
+app.get("/api/admins", async (_req, res) => {
+  try {
+    res.set("Cache-Control", "no-store");
+    await ensureAdminTable();
+    const { rows } = await query("SELECT * FROM admins ORDER BY created_at ASC");
+    res.json(rows.map(r => ({
+      id: r.id, email: r.email, name: r.name, password: r.password, role: r.role, createdAt: r.created_at
+    })));
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch admins." });
+  }
+});
+
+app.post("/api/admins", async (req, res) => {
+  try {
+    await ensureAdminTable();
+    const { email, name, password, role } = req.body;
+    if (!email || !password) return res.status(400).json({ error: "Email and password required." });
+    
+    // Check if exists
+    const { rows: existing } = await query("SELECT id FROM admins WHERE email = $1", [email]);
+    if (existing.length > 0) return res.status(400).json({ error: "Email already in use." });
+
+    const id = `admin-${Date.now()}`;
+    const createdAt = new Date().toISOString();
+    
+    const { rows: [row] } = await query(
+      `INSERT INTO admins (id, email, name, password, role, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [id, email, name || "", password, role || "admin", createdAt]
+    );
+    res.json({
+      id: row.id, email: row.email, name: row.name, password: row.password, role: row.role, createdAt: row.created_at
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create admin." });
+  }
+});
+
+app.put("/api/admins/:id", async (req, res) => {
+  try {
+    const { password, name, email, role } = req.body;
+    const sets = [];
+    const vals = [];
+    const addField = (col, val) => { sets.push(`${col} = $${vals.length+1}`); vals.push(val); };
+    
+    if (password !== undefined) addField("password", password);
+    if (name !== undefined) addField("name", name);
+    if (email !== undefined) addField("email", email);
+    if (role !== undefined) addField("role", role);
+    
+    if (!sets.length) return res.status(400).json({ error: "Nothing to update." });
+    vals.push(req.params.id);
+    
+    const { rows } = await query(
+      `UPDATE admins SET ${sets.join(", ")} WHERE id = $${vals.length} RETURNING *`, vals
+    );
+    if (!rows[0]) return res.status(404).json({ error: "Admin not found." });
+    res.json({
+      id: rows[0].id, email: rows[0].email, name: rows[0].name, password: rows[0].password, role: rows[0].role, createdAt: rows[0].created_at
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update admin." });
+  }
+});
+
+app.delete("/api/admins/:id", async (req, res) => {
+  try {
+    const { rowCount } = await query("DELETE FROM admins WHERE id = $1", [req.params.id]);
+    if (!rowCount) return res.status(404).json({ error: "Admin not found." });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete admin." });
   }
 });
 

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export interface AdminAccount {
   id: string;
@@ -9,7 +9,6 @@ export interface AdminAccount {
   createdAt: string;
 }
 
-const ADMINS_KEY = "pawglobal-admin-accounts";
 const SESSION_KEY = "pawglobal-admin-session";
 
 const DEFAULT_ADMIN: AdminAccount = {
@@ -20,20 +19,6 @@ const DEFAULT_ADMIN: AdminAccount = {
   role: "super",
   createdAt: new Date().toISOString(),
 };
-
-function loadAdmins(): AdminAccount[] {
-  try {
-    const raw = localStorage.getItem(ADMINS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  const defaults = [DEFAULT_ADMIN];
-  try { localStorage.setItem(ADMINS_KEY, JSON.stringify(defaults)); } catch {}
-  return defaults;
-}
-
-function saveAdmins(admins: AdminAccount[]) {
-  try { localStorage.setItem(ADMINS_KEY, JSON.stringify(admins)); } catch {}
-}
 
 function loadCurrentId(): string | null {
   try { return sessionStorage.getItem(SESSION_KEY); } catch { return null; }
@@ -53,8 +38,19 @@ interface AdminAuthContextType {
 const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [admins, setAdmins] = useState<AdminAccount[]>(loadAdmins);
+  const [admins, setAdmins] = useState<AdminAccount[]>([DEFAULT_ADMIN]);
   const [currentAdminId, setCurrentAdminId] = useState<string | null>(loadCurrentId);
+
+  useEffect(() => {
+    fetch("/api/admins")
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setAdmins(data);
+        }
+      })
+      .catch(err => console.error("Failed to load admins:", err));
+  }, []);
 
   const currentAdmin = admins.find(a => a.id === currentAdminId) ?? null;
   const isAuthenticated = currentAdmin !== null;
@@ -86,14 +82,36 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (admins.some(a => a.email.toLowerCase() === data.email.toLowerCase())) {
       return { success: false, error: "An admin with this email already exists." };
     }
+    const tempId = `admin-temp-${Date.now()}`;
     const newAdmin: AdminAccount = {
       ...data,
-      id: `admin-${Date.now()}`,
+      id: tempId,
       createdAt: new Date().toISOString(),
     };
-    const updated = [...admins, newAdmin];
-    setAdmins(updated);
-    saveAdmins(updated);
+    
+    setAdmins(prev => [...prev, newAdmin]);
+    
+    fetch("/api/admins", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(r => r.json())
+      .then(saved => {
+        if (saved.error) {
+          setAdmins(prev => prev.filter(a => a.id !== tempId));
+        } else {
+          setAdmins(prev => prev.map(a => a.id === tempId ? saved : a));
+          if (currentAdminId === tempId) {
+            setCurrentAdminId(saved.id);
+            try { sessionStorage.setItem(SESSION_KEY, saved.id); } catch {}
+          }
+        }
+      })
+      .catch(() => {
+        setAdmins(prev => prev.filter(a => a.id !== tempId));
+      });
+
     return { success: true };
   };
 
@@ -104,9 +122,15 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       const conflict = admins.find(a => a.email.toLowerCase() === data.email!.toLowerCase() && a.id !== id);
       if (conflict) return { success: false, error: "Email already in use." };
     }
-    const updated = admins.map(a => a.id === id ? { ...a, ...data } : a);
-    setAdmins(updated);
-    saveAdmins(updated);
+    
+    setAdmins(prev => prev.map(a => a.id === id ? { ...a, ...data } : a));
+    
+    fetch(`/api/admins/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    }).catch(console.error);
+
     return { success: true };
   };
 
@@ -116,9 +140,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     if (superAdmins.length === 0 && admins.find(a => a.id === id)?.role === "super") {
       return { success: false, error: "Cannot delete the last super admin." };
     }
-    const updated = admins.filter(a => a.id !== id);
-    setAdmins(updated);
-    saveAdmins(updated);
+    
+    setAdmins(prev => prev.filter(a => a.id !== id));
+    
+    fetch(`/api/admins/${id}`, { method: "DELETE" }).catch(console.error);
+    
     return { success: true };
   };
 

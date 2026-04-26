@@ -133,10 +133,10 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
         const dogsData = productList.filter(p => p.type === "dog");
         const catsData = productList.filter(p => p.type === "cat");
         const suppliesData = productList.filter(p => p.type === "supply");
-        setDogs(dogsData.length ? dogsData : defaultDogs);
-        setCats(catsData.length ? catsData : defaultCats);
-        setSupplies(suppliesData.length ? suppliesData : defaultSupplies);
-        setEuthanasiaListings(listingList.length ? listingList : defaultEuthanasiaListings);
+        setDogs(dogsData);
+        setCats(catsData);
+        setSupplies(suppliesData);
+        setEuthanasiaListings(listingList);
       } catch (err) {
         console.warn("Failed to load from API, using demo defaults:", err);
         setDogs(defaultDogs);
