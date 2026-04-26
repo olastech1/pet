@@ -68,6 +68,13 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Redeem Pledge Button */}
+          <Link href="/" className="hidden lg:block">
+            <Button size="sm" variant="outline" className="border-red-600 text-red-600 hover:bg-red-50 hover:text-red-700 font-bold shadow-sm">
+              Redeem Pledge
+            </Button>
+          </Link>
+
           {/* Donate Button */}
           <Link href="/donate" className="hidden sm:block">
             <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white font-bold gap-1.5 shadow-sm">
