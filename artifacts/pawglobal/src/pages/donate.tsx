@@ -14,10 +14,9 @@ import { useState, useEffect } from "react";
 import { useSearch, useLocation } from "wouter";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
-const RATES: Record<string, number> = {
-  USD: 1,
-  EUR: 0.92,
-  GBP: 0.79,
+// Rates are handled dynamically now via CurrencyContext, but we keep a fallback for the Stripe checkout session
+const FALLBACK_RATES: Record<string, number> = {
+  USD: 1, EUR: 0.92, GBP: 0.79, NGN: 1500, CAD: 1.35, AUD: 1.5,
 };
 
 const donationSchema = z.object({
@@ -141,11 +140,13 @@ export default function Donate() {
   const presets =
     currency === "EUR" ? [10, 25, 50, 100] :
     currency === "GBP" ? [8, 20, 40, 80] :
+    currency === "NGN" ? [5000, 10000, 20000, 50000] :
+    currency === "CAD" ? [10, 25, 50, 100] :
+    currency === "AUD" ? [15, 30, 50, 100] :
     [10, 25, 50, 100];
 
-  const currencySymbol =
-    currency === "EUR" ? "€" :
-    currency === "GBP" ? "£" : "$";
+  const currencySymbol = new Intl.NumberFormat(navigator.language, { style: 'currency', currency })
+    .formatToParts(0).find(p => p.type === 'currency')?.value || currency;
 
   const form = useForm<DonationFormValues>({
     resolver: zodResolver(donationSchema),
@@ -160,6 +161,9 @@ export default function Donate() {
     const newPresets =
       currency === "EUR" ? [10, 25, 50, 100] :
       currency === "GBP" ? [8, 20, 40, 80] :
+      currency === "NGN" ? [5000, 10000, 20000, 50000] :
+      currency === "CAD" ? [10, 25, 50, 100] :
+      currency === "AUD" ? [15, 30, 50, 100] :
       [10, 25, 50, 100];
     form.setValue("amount", newPresets[1]);
     setIsCustom(false);
@@ -196,11 +200,11 @@ export default function Donate() {
   };
 
   const onSubmit = async (data: DonationFormValues) => {
-
     setSubmitting(true);
     try {
-      const rateToUSD = RATES[currency] ?? 1;
-      const amountUSD = Math.max(0.5, parseFloat((data.amount * rateToUSD).toFixed(2)));
+      const rateToUSD = FALLBACK_RATES[currency] ?? 1; // Used for USD equivalent in Stripe
+      // Convert their local amount backward to USD for Stripe baseline
+      const amountUSD = Math.max(0.5, parseFloat((data.amount / rateToUSD).toFixed(2)));
 
       const resp = await fetch("/api/checkout/stripe-session", {
         method: "POST",
