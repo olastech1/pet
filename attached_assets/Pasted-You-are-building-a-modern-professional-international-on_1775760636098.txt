@@ -1,0 +1,65 @@
+You are building a modern, professional, international online pet store called "PawGlobal" (or suggest a better catchy name if needed).
+
+BUSINESS FOCUS:
+- Main products: Dogs and cats (puppies, kittens, rescues for adoption or sale)
+- Also sell pet supplies (food, toys, beds, grooming, crates, health products)
+- Strong donation/give-back mission: 5-10% of sales automatically go to Nigerian animal shelters + customers can make direct donations or sponsor specific animals
+- Target audience: Nigeria (Lagos base) + international buyers (Nigerian diaspora + global pet lovers)
+- Tone: Warm, trustworthy, cute, ethical, professional
+
+KEY FEATURES:
+- Homepage with hero banner (cute dog + cat), quick shop links, donation highlight, and testimonials
+- Separate shop sections: Dogs, Cats, Supplies
+- Detailed product pages for each pet (photos, breed, age, gender, health certificate info, price in NGN + USD, "Buy" or "Adopt" buttons)
+- Supplies section with international shipping calculator
+- Dedicated "Donate" page with preset amounts, custom donation, and impact tracker (e.g., "Your donation helped 47 animals this month")
+- Shopping cart and checkout with multi-currency (NGN, USD, EUR, GBP)
+- International shipping options (supplies ship worldwide via DHL; live pets show "Local Nigeria delivery" or "Request international relocation assistance")
+- Responsive, mobile-first design with Tailwind CSS
+- Dark/light mode toggle
+- Pet filtering & search (breed, age, price, etc.)
+- Fake data for 8-10 dogs and cats + 12 supplies (easy to edit later)
+
+TECH STACK (use latest 2026 best practices):
+- Next.js 15 (App Router)
+- TypeScript
+- Tailwind CSS + shadcn/ui components
+- React Hook Form + Zod for forms
+- Paystack + Stripe integration for payments and donations (use test keys, make it easy to swap)
+- Simple JSON data file for products (or Supabase if agents suggest)
+- Clean, modern UI with lots of high-quality pet photos (use placeholder images from unsplash or lorem picsum for pets)
+
+PAGES TO CREATE:
+1. / (homepage)
+2. /shop/dogs
+3. /shop/cats
+4. /shop/supplies
+5. /shop/[id] (dynamic product detail page)
+6. /donate
+7. /cart
+8. /checkout
+9. /about
+10. /contact
+
+FILE STRUCTURE (follow this exactly):
+pet-store-international/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx                  ← homepage
+│   ├── shop/
+│   │   ├── dogs/page.tsx
+│   │   ├── cats/page.tsx
+│   │   ├── supplies/page.tsx
+│   │   └── [id]/page.tsx
+│   ├── donate/page.tsx
+│   ├── cart/page.tsx
+│   ├── checkout/page.tsx
+│   ├── about/page.tsx
+│   └── contact/page.tsx
+├── components/                   ← Header, Footer, ProductCard, DonationForm, ShippingCalculator, etc.
+├── lib/                          ← data/products.ts (dogs, cats, supplies)
+├── public/
+│   └── images/                   ← pet photos, logo, banners
+└── types.ts
+
+Make the site beautiful, fast, SEO-friendly, and fully functional. Include realistic sample data. Use modern UI with paw icons, warm colors (greens, oranges, soft browns). Add subtle animations. Make donations and payments prominent. After building, show me the full project summary and how to run it locally.

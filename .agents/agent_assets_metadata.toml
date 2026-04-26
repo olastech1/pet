@@ -1,0 +1,14 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "ZMB2xgXtuJ0N40uDMmpSz"
+uri = "file://hostinger-deploy/pawglobal-hostinger.tar.gz"
+type = "unspecified"
+title = "PawGlobal — Hostinger Deployment Package"
+
+[[outputs]]
+id = "DPh70NsWHwJqupcL6d_-y"
+uri = "file://vercel-deploy/pawglobal-vercel.tar.gz"
+type = "unspecified"
+title = "PawGlobal — Vercel Deployment Package"

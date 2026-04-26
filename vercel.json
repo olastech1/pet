@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "framework": null,
+  "installCommand": "npm install --prefix api",
+  "buildCommand": "",
+  "outputDirectory": "vercel-deploy/public",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
