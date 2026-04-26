@@ -16,8 +16,8 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 
 const RATES: Record<string, number> = {
   USD: 1,
-  EUR: 1620 / 1500,
-  GBP: 1890 / 1500,
+  EUR: 0.92,
+  GBP: 0.79,
 };
 
 const donationSchema = z.object({
@@ -154,6 +154,16 @@ export default function Donate() {
 
   const watchedAmount = form.watch("amount") || 0;
   const causeLabel = CAUSES.find(c => c.id === selectedCause)?.label ?? selectedCause;
+
+  // Sync preset amount when currency auto-detects or changes
+  useEffect(() => {
+    const newPresets =
+      currency === "EUR" ? [10, 25, 50, 100] :
+      currency === "GBP" ? [8, 20, 40, 80] :
+      [10, 25, 50, 100];
+    form.setValue("amount", newPresets[1]);
+    setIsCustom(false);
+  }, [currency]);
 
   const buildDonationMessage = (data: DonationFormValues) => {
     const amountStr = `${currencySymbol}${data.amount.toLocaleString()}`;
