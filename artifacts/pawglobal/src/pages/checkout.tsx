@@ -17,9 +17,9 @@ const checkoutSchema = z.object({
   email: z.string().email("Invalid email address"),
   firstName: z.string().min(2, "First name is required"),
   lastName: z.string().min(2, "Last name is required"),
-  address: z.string().min(5, "Address is required"),
-  city: z.string().min(2, "City is required"),
-  country: z.string().min(2, "Country is required"),
+  address: z.string().optional().default(""),
+  city: z.string().optional().default(""),
+  country: z.string().optional().default("US"),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
@@ -80,6 +80,8 @@ export default function Checkout() {
     return null;
   }
 
+  const isSupplyOnly = items.every(item => item.product.type === "supply");
+
   const countryLabel = (code: string) => COUNTRIES.find(c => c.value === code)?.label ?? code;
 
   const buildOrderMessage = (data: CheckoutFormValues) => {
@@ -98,7 +100,7 @@ export default function Checkout() {
       "",
       `👤 Name: ${data.firstName} ${data.lastName}`,
       `📧 Email: ${data.email}`,
-      `📍 Ship to: ${data.address}, ${data.city}, ${countryLabel(data.country)}`,
+      `📍 ${isSupplyOnly ? 'Deliver to: Partner shelter' : `Ship to: ${data.address}, ${data.city}, ${countryLabel(data.country)}`}`,
       "",
       "Please confirm my order and payment details. Thank you! 🐾",
     ].join("\n");
@@ -160,7 +162,10 @@ export default function Checkout() {
     <PageTransition>
       <div className="bg-muted/10 min-h-screen py-12">
         <div className="container mx-auto px-4 max-w-6xl">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold mb-8">Checkout</h1>
+          <h1 className="text-3xl md:text-4xl font-serif font-bold mb-2">{isSupplyOnly ? "Shelter Supply Checkout" : "Checkout"}</h1>
+          {isSupplyOnly && (
+            <p className="text-muted-foreground mb-6">Your supplies will be delivered directly to our partner rescue shelters. No shipping address needed — we handle it for you!</p>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Form Section */}
@@ -186,7 +191,8 @@ export default function Checkout() {
                     />
                   </div>
 
-                  {/* Shipping Address */}
+                  {/* Shipping Address — only for non-supply orders */}
+                  {!isSupplyOnly && (
                   <div className="bg-background p-6 rounded-2xl border space-y-4">
                     <h2 className="text-xl font-bold mb-4 font-serif">Shipping Address</h2>
                     <FormField
@@ -266,6 +272,7 @@ export default function Checkout() {
                       )}
                     />
                   </div>
+                  )}
 
                   {/* Payment notice */}
                   <div className="bg-background p-6 rounded-2xl border">
@@ -317,7 +324,7 @@ export default function Checkout() {
             {/* Order Summary */}
             <div className="lg:col-span-5">
               <div className="bg-background p-6 rounded-2xl border sticky top-24">
-                <h3 className="text-xl font-serif font-bold mb-6">Order Summary</h3>
+                <h3 className="text-xl font-serif font-bold mb-6">{isSupplyOnly ? "Shelter Supply Order" : "Order Summary"}</h3>
 
                 <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2">
                   {items.map(item => (
@@ -343,8 +350,8 @@ export default function Checkout() {
                     <span className="font-medium">{formatPrice(totalNGN, totalUSD)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span className="font-medium">Free</span>
+                    <span className="text-muted-foreground">{isSupplyOnly ? "Shelter Delivery" : "Shipping"}</span>
+                    <span className="font-medium text-green-600">Free</span>
                   </div>
                   <div className="flex justify-between text-lg font-bold pt-3 border-t">
                     <span>Total</span>

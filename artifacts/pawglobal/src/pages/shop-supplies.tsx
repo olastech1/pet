@@ -24,8 +24,8 @@ export default function ShopSupplies() {
       <div className="bg-muted/30 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Premium Pet Supplies</h1>
-            <p className="text-lg text-muted-foreground">Everything your pet needs to thrive, with worldwide delivery to your door.</p>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4">Buy Supplies for Rescue Pets</h1>
+            <p className="text-lg text-muted-foreground">Purchase essential supplies that go directly to animals in our partner shelters. Every item you buy helps a pet in need.</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 mb-8">

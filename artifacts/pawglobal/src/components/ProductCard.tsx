@@ -103,7 +103,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
                   </span>
                 ) : isSupply ? (
                   <span className="flex items-center gap-2">
-                    <ShoppingBag className="w-4 h-4" /> View Details
+                    <Heart className="w-4 h-4" /> Buy for Shelter
                   </span>
                 ) : (
                   "View Details"

@@ -143,7 +143,7 @@ export default function ProductDetail() {
                   {isAdopt ? (
                     <><Heart className="w-5 h-5 mr-2" /> Adopt {product.name}</>
                   ) : isSupply ? (
-                    <><ShoppingBag className="w-5 h-5 mr-2" /> Add to Cart</>
+                    <><Heart className="w-5 h-5 mr-2" /> Buy for Rescue Pets</>
                   ) : (
                     <><ShoppingBag className="w-5 h-5 mr-2" /> Buy {product.name}</>
                   )}
@@ -166,15 +166,15 @@ export default function ProductDetail() {
                 <div className="flex flex-col gap-3 text-sm text-muted-foreground">
                   <div className="flex items-start gap-2">
                     <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
-                    <p>EuthList Guarantee: {isSupply ? "100% authentic products" : "Healthy, vet-checked pets"}</p>
+                    <p>EuthList Guarantee: {isSupply ? "100% of your purchase goes directly to rescue shelters" : "Healthy, vet-checked pets"}</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <Truck className="w-5 h-5 text-primary shrink-0" />
-                    <p>International shipping available. Rates calculated at checkout.</p>
+                    <p>{isSupply ? "Supplies are delivered directly to our partner shelters and rescue centres." : "International shipping available. Rates calculated at checkout."}</p>
                   </div>
                   <div className="flex items-start gap-2">
                     <Info className="w-5 h-5 text-primary shrink-0" />
-                    <p>Need help? Contact our support team via WhatsApp.</p>
+                    <p>{isSupply ? "You'll receive a confirmation receipt once the supplies are sent to the shelter." : "Need help? Contact our support team via WhatsApp."}</p>
                   </div>
                 </div>
               </div>

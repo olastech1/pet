@@ -9,6 +9,8 @@ export default function Cart() {
   const { items, removeFromCart, updateQuantity, totalNGN, totalUSD } = useCart();
   const { formatPrice } = useCurrency();
 
+  const isSupplyOnly = items.length > 0 && items.every(item => item.product.type === "supply");
+
   if (items.length === 0) {
     return (
       <PageTransition>
@@ -34,7 +36,11 @@ export default function Cart() {
   return (
     <PageTransition>
       <div className="container mx-auto px-4 py-12 lg:py-20">
-        <h1 className="text-4xl font-serif font-bold mb-10">Your Cart</h1>
+        <h1 className="text-4xl font-serif font-bold mb-2">{isSupplyOnly ? "Shelter Supply Cart" : "Your Cart"}</h1>
+        {isSupplyOnly && (
+          <p className="text-muted-foreground mb-8">These supplies will be delivered directly to our partner rescue shelters.</p>
+        )}
+        {!isSupplyOnly && <div className="mb-10" />}
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
@@ -98,8 +104,8 @@ export default function Cart() {
                   <span>{formatPrice(totalNGN, totalUSD)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground pb-4 border-b border-border/50">
-                  <span>Shipping</span>
-                  <span>Calculated at checkout</span>
+                  <span>{isSupplyOnly ? "Shelter Delivery" : "Shipping"}</span>
+                  <span className={isSupplyOnly ? "font-medium text-green-600" : ""}>{isSupplyOnly ? "Free" : "Calculated at checkout"}</span>
                 </div>
                 <div className="flex justify-between font-bold text-xl">
                   <span>Total</span>
