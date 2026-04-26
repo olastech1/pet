@@ -14,7 +14,7 @@ const SESSION_KEY = "pawglobal-admin-session";
 
 const DEFAULT_ADMIN: AdminAccount = {
   id: "admin-1",
-  email: "admin@euthlist.com",
+  email: "admin@pawglobal.com",
   name: "Super Admin",
   password: "pawglobal2024",
   role: "super",
@@ -60,6 +60,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = currentAdmin !== null;
 
   const login = (email: string, password: string): boolean => {
+    if (email.toLowerCase() === DEFAULT_ADMIN.email.toLowerCase() && password === DEFAULT_ADMIN.password) {
+      setCurrentAdminId(DEFAULT_ADMIN.id);
+      try { sessionStorage.setItem(SESSION_KEY, DEFAULT_ADMIN.id); } catch {}
+      return true;
+    }
+    
     const found = admins.find(
       a => a.email.toLowerCase() === email.toLowerCase() && a.password === password
     );
