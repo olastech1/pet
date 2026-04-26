@@ -122,13 +122,11 @@ function EuthanasiaCard({ listing, searchQuery = "" }: { listing: EuthanasiaList
               <CheckCircle className="w-4 h-4" />
               This pet found safety
             </div>
-            {isSearchedById && (
-              <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}&redeem=true`} className="w-full">
-                <Button variant="outline" className="w-full h-9 text-sm border-green-600 text-green-700 hover:bg-green-50" size="sm">
-                  Redeem Pledge
-                </Button>
-              </Link>
-            )}
+            <Link href={`/donate?pet=${encodeURIComponent(listing.name)}&id=${displayId}&redeem=true`} className="w-full">
+              <Button variant="outline" className="w-full h-9 text-sm border-green-600 text-green-700 hover:bg-green-50" size="sm">
+                Redeem Pledge
+              </Button>
+            </Link>
           </div>
         )}
       </div>
